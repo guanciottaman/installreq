@@ -1,25 +1,36 @@
 """Installs all the dependencies to run a file (Runs automatically)"""
 import argparse
+import json
 import logging
-import sys
 import os
 import subprocess
+import sys
 import types
+
 import pkg_resources
+
 
 class InstallRequirements:
     """Main InstallRequirements class"""
     def __init__(self):
         logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+        parser = argparse.ArgumentParser(
+            description='Install requirements of a file.',
+            usage='python main.py <file_to_run>'
+        )
+        parser.add_argument('file_to_run', help='The file you want to run')
+        args = parser.parse_args(sys.argv[1:])
         self.file_to_run = args.file_to_run
 
     def get_pypi_package_name(self, module_name):
         """Get distribution name of the package"""
-        if module_name == 'PIL':
-            return 'Pillow'
+        with open('top100.json', 'r', encoding='utf-8') as f:
+            d = json.load(f)
+            if module_name in d['packages']:
+                return d['packages'][module_name]
         try:
-            distribution = pkg_resources.get_distribution(module_name)
-            return distribution.key
+            distribution_ = pkg_resources.get_distribution(module_name)
+            return distribution_.key
         except pkg_resources.DistributionNotFound:
             return None
 
@@ -75,5 +86,6 @@ class InstallRequirements:
         except Exception as error:
             logging.exception('Exception: %s', error)
 
-i = InstallRequirements()
-i.main()
+if __name__ == '__main__':
+    i = InstallRequirements()
+    i.main()

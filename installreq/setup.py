@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='installreq',
@@ -6,5 +6,6 @@ setup(
     description='Installs all the requirements for a file and runs it',
     author='Guanciottaman',
     author_email='italia.matteo00@gmail.com',
-    packages=['']
+    url="https://github.com/guanciottaman/installreq",
+    packages=find_packages()
 )
